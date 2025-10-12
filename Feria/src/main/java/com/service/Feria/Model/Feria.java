@@ -12,15 +12,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "Feria")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Feria {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animal_seq")
-    @SequenceGenerator(name = "animal_seq", sequenceName = "ANIMALES_SEQ", allocationSize = 1)
-    @Column(name = "id_animal")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "feria_seq")
+    @SequenceGenerator(name = "feria_seq", sequenceName = "FERIAS_SEQ", allocationSize = 1)
+    @Column(name = "id_feria")
     private Integer id;
 
     @Column(name = "nombre_feria")
