@@ -1,4 +1,4 @@
-package com.servicio.Usuario.Model; // Reemplaza con el nombre de tu paquete
+package com.servicio.Usuario.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,9 +24,21 @@ public class Usuario {
     @Column(name = "ID_USUARIO")
     private Integer idUsuario;
 
+    @Column(name = "NOMBRE_USUARIO", nullable = false, length = 50)
+    private String nombreUsuario;
+
     @Column(name = "CORREO_ELECTRONICO", nullable = false, unique = true, length = 100)
     private String correoElectronico;
-    
-    @Column(name = "CONTRASENA", nullable = false, length = 255) // La longitud debe ser amplia para hashes
-    private String contrasena; // Se cambia el nombre de la variable para evitar la 'ñ'
+
+    @Column(name = "FOTO", length = 500)
+    private String foto; // Puede ser una URL o base64
+
+    @Column(name = "DESCRIPCION", length = 500)
+    private String descripcion;
+
+    @Column(name = "HORARIO", length = 100)
+    private String horario;
+
+    @Column(name = "CONTRASENA", nullable = false, length = 255)
+    private String contrasena; // Longitud amplia para almacenar hashes
 }

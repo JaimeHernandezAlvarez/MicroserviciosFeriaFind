@@ -1,11 +1,11 @@
-package com.servicio.Usuario.Config; // Asegúrate de que el paquete sea el correcto
+package com.servicio.Usuario.Config;
 
 import com.servicio.Usuario.Model.Usuario;
 import com.servicio.Usuario.Repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
-import org.springframework.security.crypto.password.PasswordEncoder; // 1. Importa el codificador
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -15,7 +15,7 @@ import java.util.Locale;
 public class UsuarioDataLoader {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder; // 2. Inyecta el codificador de contraseñas
+    private final PasswordEncoder passwordEncoder;
     @SuppressWarnings("deprecation")
     private final Faker faker = new Faker(new Locale("es"));
 
@@ -25,21 +25,30 @@ public class UsuarioDataLoader {
             for (int i = 0; i < 10; i++) {
                 Usuario usuario = new Usuario();
 
-                // 📧 Genera un correo electrónico falso y único
+                usuario.setNombreUsuario(faker.name().username());
                 usuario.setCorreoElectronico(faker.internet().emailAddress());
+                usuario.setFoto(faker.internet().image());
+                usuario.setDescripcion(faker.lorem().sentence(10));
+                usuario.setHorario(faker.job().keySkills());
 
-                // 🔐 Genera una contraseña y la codifica (hashea) antes de guardarla
-                String contrasenaPlana = "password123"; // O usa faker.internet().password()
+                // 🔐 Genera y encripta la contraseña
+                String contrasenaPlana = faker.internet().password(8, 12);
                 usuario.setContrasena(passwordEncoder.encode(contrasenaPlana));
 
                 usuarioRepository.save(usuario);
             }
-            // ✨ Crea un usuario de prueba con datos conocidos para facilitar el login
+
+            // ✨ Usuario de prueba para desarrollo o login manual
             Usuario usuarioDePrueba = new Usuario();
+            usuarioDePrueba.setNombreUsuario("admin");
             usuarioDePrueba.setCorreoElectronico("usuario@prueba.com");
-            usuarioDePrueba.setContrasena(passwordEncoder.encode("admin")); // Contraseña es "admin"
+            usuarioDePrueba.setFoto("https://i.pravatar.cc/150?img=3");
+            usuarioDePrueba.setDescripcion("Usuario administrador de prueba");
+            usuarioDePrueba.setHorario("Lunes a Viernes, 9:00 - 18:00");
+            usuarioDePrueba.setContrasena(passwordEncoder.encode("admin")); // Contraseña: admin
+
             usuarioRepository.save(usuarioDePrueba);
-            
+
             System.out.println("✅ Datos falsos de Usuario generados correctamente.");
         }
     }
