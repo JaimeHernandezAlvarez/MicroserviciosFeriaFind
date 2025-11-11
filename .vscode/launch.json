@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AgendaApplication",
+            "request": "launch",
+            "mainClass": "com.servicio.agenda.AgendaApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "VendedorApplication",
             "request": "launch",
             "mainClass": "com.servicio.Vendedor.VendedorApplication",

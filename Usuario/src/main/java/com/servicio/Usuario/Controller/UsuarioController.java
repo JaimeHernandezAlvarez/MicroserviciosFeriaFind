@@ -44,6 +44,7 @@ public class UsuarioController {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
+        @SuppressWarnings("null")
         CollectionModel<EntityModel<Usuario>> collectionModel = CollectionModel.of(
                 usuariosModel,
                 linkTo(methodOn(UsuarioController.class).listar()).withSelfRel()

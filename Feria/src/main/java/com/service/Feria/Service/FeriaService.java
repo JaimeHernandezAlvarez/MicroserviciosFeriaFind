@@ -27,6 +27,7 @@ public class FeriaService {
     }
 
     //Guardar Animal
+    @SuppressWarnings("null")
     public Feria save(Feria feria){
         return feriaRepository.save(feria);
     }
