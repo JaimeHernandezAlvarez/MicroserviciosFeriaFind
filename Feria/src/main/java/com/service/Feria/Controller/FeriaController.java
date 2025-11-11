@@ -31,6 +31,7 @@ public class FeriaController {
     // ------------------------------------------------------------
     // GET - Listar todas las ferias
     // ------------------------------------------------------------
+    @SuppressWarnings("null")
     @Operation(summary = "Listar todas las ferias", description = "Devuelve una lista de todas las ferias con enlaces HATEOAS")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Feria>>> listar() {
