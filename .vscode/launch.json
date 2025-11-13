@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FeriaApplication",
+            "request": "launch",
+            "mainClass": "com.service.Feria.FeriaApplication",
+            "projectName": "Feria"
+        },
+        {
+            "type": "java",
+            "name": "CalificacionApplication",
+            "request": "launch",
+            "mainClass": "com.servicio.Calificacion.CalificacionApplication",
+            "projectName": "Calificacion"
+        },
+        {
+            "type": "java",
             "name": "DetalleUsuarioApplication",
             "request": "launch",
             "mainClass": "com.servicio.DetalleUsuario.DetalleUsuarioApplication",
