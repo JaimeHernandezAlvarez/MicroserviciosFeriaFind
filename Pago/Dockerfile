@@ -30,4 +30,10 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # El comando final: ¡Arranca la aplicación!
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# --- EL COMANDO MAESTRO ---
+# 1. Crea la carpeta /app/wallet
+# 2. Copia los archivos de texto (tnsnames) que subiste a Secret Files (/etc/secrets) hacia /app/wallet
+# 3. Decodifica la variable WALLET_B64 y crea el archivo cwallet.sso en /app/wallet
+# 4. Arranca la aplicación
+ENTRYPOINT ["/bin/sh", "-c", "mkdir -p /app/wallet && cp /etc/secrets/* /app/wallet/ 2>/dev/null || : && echo $WALLET_B64 | base64 -d > /app/wallet/cwallet.sso && java -jar app.jar"]
