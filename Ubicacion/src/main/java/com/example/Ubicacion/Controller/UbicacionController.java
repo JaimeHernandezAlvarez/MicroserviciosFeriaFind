@@ -31,6 +31,7 @@ public class UbicacionController {
     // ------------------------------------------------------------
     // GET - Listar todas las ubicaciones
     // ------------------------------------------------------------
+    @SuppressWarnings("null")
     @Operation(summary = "Listar todas las ubicaciones", description = "Devuelve una lista de todas las ubicaciones con enlaces HATEOAS")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Ubicacion>>> listar() {

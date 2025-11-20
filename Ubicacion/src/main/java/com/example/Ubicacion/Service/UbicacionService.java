@@ -33,6 +33,7 @@ public class UbicacionService {
      * @param ubicacion La entidad Ubicacion a guardar.
      * @return La entidad Ubicacion guardada.
      */
+    @SuppressWarnings("null")
     public Ubicacion save(Ubicacion ubicacion) {
         return ubicacionRepository.save(ubicacion);
     }
@@ -41,6 +42,7 @@ public class UbicacionService {
      * Elimina una ubicación de la base de datos por su ID.
      * @param id El ID de la ubicación a eliminar.
      */
+    @SuppressWarnings("null")
     public void delete(Long id) {
         // Primero verificamos si existe para poder lanzar una excepción si no
         ubicacionRepository.deleteById(id);
