@@ -15,9 +15,14 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    private PasswordEncoder passwordEncoder;
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     //Listar Ferias
     public List<Usuario> findAll(){
