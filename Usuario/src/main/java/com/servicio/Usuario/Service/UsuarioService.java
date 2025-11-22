@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.servicio.Usuario.Model.Usuario;
 import com.servicio.Usuario.Repository.UsuarioRepository;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -15,6 +17,7 @@ import jakarta.transaction.Transactional;
 public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    private PasswordEncoder passwordEncoder;
 
     //Listar Ferias
     public List<Usuario> findAll(){
@@ -27,8 +30,10 @@ public class UsuarioService {
     }
 
     //Guardar Animal
-    public Usuario save(Usuario feria){
-        return usuarioRepository.save(feria);
+    public Usuario save(Usuario usuario){
+        String passwordEncriptado = passwordEncoder.encode(usuario.getContrasena());
+        usuario.setContrasena(passwordEncriptado);
+        return usuarioRepository.save(usuario);
     }
 
     //Eliminar animal (por id)
