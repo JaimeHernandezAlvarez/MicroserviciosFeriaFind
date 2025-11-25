@@ -114,4 +114,36 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // ------------------------------------------------------------
+    // POST - Login de usuario (Nuevo Endpoint)
+    // ------------------------------------------------------------
+    @Operation(summary = "Iniciar sesión", description = "Verifica credenciales y devuelve el usuario si son correctas")
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> credenciales) {
+        // 1. Extraemos los datos que envía Android
+        String email = credenciales.get("correoElectronico");
+        String passwordIngresada = credenciales.get("password"); // Android envía "password"
+
+        if (email == null || passwordIngresada == null) {
+            return ResponseEntity.badRequest().body("Faltan credenciales");
+        }
+
+        // 2. Buscamos el usuario en la BD
+        Usuario usuario = usuarioService.buscarPorCorreo(email);
+
+        // 3. Verificamos si existe y si la contraseña coincide
+        if (usuario != null) {
+            // NOTA: Aquí comparamos texto plano. 
+            // Si en el futuro usas BCrypt en el backend, usarías: passwordEncoder.matches(passwordIngresada, usuario.getContrasena())
+            if (usuario.getContrasena().equals(passwordIngresada)) {
+                
+                // ¡Éxito! Retornamos el usuario con formato HATEOAS (igual que en el registro)
+                return ResponseEntity.ok(assembler.toModel(usuario));
+            }
+        }
+
+        // 4. Si falló algo (usuario null o contraseña mal), devolvemos 401 Unauthorized
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }

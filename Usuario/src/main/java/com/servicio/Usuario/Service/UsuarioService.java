@@ -2,7 +2,6 @@ package com.servicio.Usuario.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.servicio.Usuario.Model.Usuario;
@@ -18,7 +17,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
@@ -45,4 +43,9 @@ public class UsuarioService {
     public void delete(long id){
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario buscarPorCorreo(String correo) {
+    // Usamos el repositorio. Si no encuentra nada, retornamos null
+    return usuarioRepository.findByCorreoElectronico(correo).orElse(null);
+}
 }
