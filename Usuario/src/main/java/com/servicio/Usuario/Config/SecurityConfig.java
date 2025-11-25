@@ -56,8 +56,13 @@ public class SecurityConfig {
                     "/webjars/**"
                 ).permitAll()
                 
-                // 2b. Permitir peticiones POST PÚBLICAS para el endpoint de registro de usuarios
+                // --- AQUÍ ESTÁ EL CAMBIO ---
+                // Tienes esto (Registro):
                 .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
+                
+                // ¡TE FALTABA ESTO! (Login):
+                // Debes permitir explícitamente el acceso al endpoint de login nuevo
+                .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/login").permitAll()
                 
                 // 2c. Para CUALQUIER OTRA petición, se requiere que el usuario esté autenticado
                 .anyRequest().authenticated()
