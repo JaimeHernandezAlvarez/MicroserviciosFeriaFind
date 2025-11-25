@@ -146,4 +146,16 @@ public class UsuarioController {
         // 4. Si falló algo (usuario null o contraseña mal), devolvemos 401 Unauthorized
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+    @Operation(summary = "Buscar por Email", description = "Obtiene un usuario dado su correo electrónico")
+    @GetMapping("/buscar") // La url final será: /api/v1/usuarios/buscar?email=ejemplo@correo.com
+    public ResponseEntity<EntityModel<Usuario>> buscarPorEmail(@RequestParam String email) {
+        Usuario usuario = usuarioService.buscarPorCorreo(email);
+        
+        if (usuario != null) {
+            return ResponseEntity.ok(assembler.toModel(usuario));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
