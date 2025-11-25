@@ -28,6 +28,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioModelAssembler assembler; // 3. Inyección del assembler de Usuario
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     // ------------------------------------------------------------
     // GET - Listar todos los usuarios
     // ------------------------------------------------------------
@@ -134,11 +136,11 @@ public class UsuarioController {
 
         // 3. Verificamos si existe y si la contraseña coincide
         if (usuario != null) {
-            // NOTA: Aquí comparamos texto plano. 
-            // Si en el futuro usas BCrypt en el backend, usarías: passwordEncoder.matches(passwordIngresada, usuario.getContrasena())
-            if (usuario.getContrasena().equals(passwordIngresada)) {
-                
-                // ¡Éxito! Retornamos el usuario con formato HATEOAS (igual que en el registro)
+            // --- AQUÍ ESTÁ LA SOLUCIÓN ---
+            // passwordEncoder.matches( textoPlano, hashDeLaBD )
+            // El primer argumento es lo que llega de Android ("123456789")
+            // El segundo es lo que está en la BD ("$2a$10$...")
+            if (passwordEncoder.matches(passwordIngresada, usuario.getContrasena())) {
                 return ResponseEntity.ok(assembler.toModel(usuario));
             }
         }
