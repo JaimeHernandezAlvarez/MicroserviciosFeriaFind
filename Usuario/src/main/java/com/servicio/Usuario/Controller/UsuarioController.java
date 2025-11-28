@@ -82,22 +82,37 @@ public class UsuarioController {
     // ------------------------------------------------------------
     // PUT - Actualizar usuario existente
     // ------------------------------------------------------------
-    @Operation(summary = "Actualizar un usuario", description = "Modifica los datos de un usuario existente con enlace HATEOAS")
+    @Operation(summary = "Actualizar un usuario", description = "Modifica los datos de un usuario existente")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Usuario>> actualizar(@PathVariable Integer id, @RequestBody Usuario usuario) {
         try {
             Usuario existente = usuarioService.findById(id);
+
+            if (existente == null) {
+                return ResponseEntity.notFound().build();
+            }
             
-            // 4. Se actualizan los campos de la entidad Usuario
-            existente.setCorreoElectronico(usuario.getCorreoElectronico());
+            // --- ACTUALIZAR TODOS LOS CAMPOS ---
             
-            // Nota de seguridad: La contraseña debe ser manejada con cuidado.
-            // La capa de servicio debería encargarse de verificar si la contraseña
-            // ha cambiado y codificarla antes de guardarla.
-            existente.setContrasena(usuario.getContrasena());
+            // 1. Campos básicos (Nombre, Foto, Descripción, Horario)
+            // Verificamos que no vengan nulos para no borrar datos accidentalmente
+            if (usuario.getNombreUsuario() != null) existente.setNombreUsuario(usuario.getNombreUsuario());
+            if (usuario.getFoto() != null) existente.setFoto(usuario.getFoto());
+            if (usuario.getDescripcion() != null) existente.setDescripcion(usuario.getDescripcion());
+            if (usuario.getHorario() != null) existente.setHorario(usuario.getHorario());
+
+            // 2. Email
+            if (usuario.getCorreoElectronico() != null) existente.setCorreoElectronico(usuario.getCorreoElectronico());
+            
+            // 3. Contraseña (Solo si viene una nueva)
+            if (usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
+                // Aquí idealmente deberías encriptarla, pero para tu demo:
+                existente.setContrasena(usuario.getContrasena());
+            }
 
             Usuario actualizado = usuarioService.save(existente);
             return ResponseEntity.ok(assembler.toModel(actualizado));
+
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
