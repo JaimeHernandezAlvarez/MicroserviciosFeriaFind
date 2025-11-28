@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/buscar").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/buscar/**").permitAll()
 
                 // 3. ZONA PRIVADA
                 .anyRequest().authenticated()
