@@ -92,23 +92,22 @@ public class UsuarioController {
                 return ResponseEntity.notFound().build();
             }
             
-            // --- ACTUALIZAR TODOS LOS CAMPOS ---
-            
-            // 1. Campos básicos (Nombre, Foto, Descripción, Horario)
-            // Verificamos que no vengan nulos para no borrar datos accidentalmente
+            // 1. Actualizamos datos básicos (con protección contra nulos)
             if (usuario.getNombreUsuario() != null) existente.setNombreUsuario(usuario.getNombreUsuario());
+            if (usuario.getCorreoElectronico() != null) existente.setCorreoElectronico(usuario.getCorreoElectronico());
             if (usuario.getFoto() != null) existente.setFoto(usuario.getFoto());
             if (usuario.getDescripcion() != null) existente.setDescripcion(usuario.getDescripcion());
             if (usuario.getHorario() != null) existente.setHorario(usuario.getHorario());
-
-            // 2. Email
-            if (usuario.getCorreoElectronico() != null) existente.setCorreoElectronico(usuario.getCorreoElectronico());
             
-            // 3. Contraseña (Solo si viene una nueva)
+            // 2. PROTECCIÓN CRÍTICA DE CONTRASEÑA
+            // Solo la actualizamos si el usuario envió algo distinto de null y distinto de vacío
             if (usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
-                // Aquí idealmente deberías encriptarla, pero para tu demo:
+                // IMPORTANTE: Aquí deberías encriptarla si tu Service no lo hace
+                // existente.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+                // Pero por ahora, usaremos tu lógica actual:
                 existente.setContrasena(usuario.getContrasena());
             }
+            // SI VIENE NULL, NO ENTRA AL IF Y MANTIENE LA CONTRASEÑA VIEJA.
 
             Usuario actualizado = usuarioService.save(existente);
             return ResponseEntity.ok(assembler.toModel(actualizado));
