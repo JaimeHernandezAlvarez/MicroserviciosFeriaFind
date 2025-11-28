@@ -58,11 +58,25 @@ public class UsuarioController {
     // ------------------------------------------------------------
     // POST - Crear un nuevo usuario
     // ------------------------------------------------------------
-    @Operation(summary = "Guardar nuevo usuario", description = "Crea un nuevo usuario en la base de datos con enlace HATEOAS")
+    @Operation(summary = "Crear nuevo usuario", description = "Crea un usuario encriptando su contraseña")
     @PostMapping
-    public ResponseEntity<EntityModel<Usuario>> guardar(@RequestBody Usuario usuario) {
+    public ResponseEntity<EntityModel<Usuario>> crear(@RequestBody Usuario usuario) {
+        
+        // 1. VALIDACIÓN BÁSICA (Opcional pero recomendada)
+        if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
+            return ResponseEntity.badRequest().build(); // No se puede crear sin contraseña
+        }
+
+        // 2. ENCRIPTACIÓN EXPLÍCITA 🔒
+        // Aquí tomamos la contraseña plana "123456" y la volvemos "$2a$10$..."
+        String passEncriptada = passwordEncoder.encode(usuario.getContrasena());
+        usuario.setContrasena(passEncriptada);
+
+        // 3. GUARDAR
+        // Ahora le pasamos al servicio el usuario YA encriptado
         Usuario nuevoUsuario = usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(nuevoUsuario));
+        
+        return ResponseEntity.created(null).body(assembler.toModel(nuevoUsuario));
     }
 
     // ------------------------------------------------------------
@@ -102,10 +116,10 @@ public class UsuarioController {
             // 2. PROTECCIÓN CRÍTICA DE CONTRASEÑA
             // Solo la actualizamos si el usuario envió algo distinto de null y distinto de vacío
             if (usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
-                // IMPORTANTE: Aquí deberías encriptarla si tu Service no lo hace
-                // existente.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-                // Pero por ahora, usaremos tu lógica actual:
-                existente.setContrasena(usuario.getContrasena());
+                // AQUÍ SÍ ENCRIPTAMOS, porque sabemos que viene del JSON (es texto plano)
+                // y es una contraseña nueva que el usuario escribió.
+                String passEncriptada = passwordEncoder.encode(usuario.getContrasena());
+                existente.setContrasena(passEncriptada);
             }
             // SI VIENE NULL, NO ENTRA AL IF Y MANTIENE LA CONTRASEÑA VIEJA.
 

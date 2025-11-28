@@ -34,8 +34,6 @@ public class UsuarioService {
 
     //Guardar Animal
     public Usuario save(Usuario usuario){
-        String passwordEncriptado = passwordEncoder.encode(usuario.getContrasena());
-        usuario.setContrasena(passwordEncriptado);
         return usuarioRepository.save(usuario);
     }
 
