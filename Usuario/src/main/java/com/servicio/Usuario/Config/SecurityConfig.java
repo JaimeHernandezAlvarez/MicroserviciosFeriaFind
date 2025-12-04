@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationProvider; // Solo importamos la interfaz
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,7 +24,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider; // Inyectamos el que creamos en ApplicationConfig
+    private final AuthenticationProvider authenticationProvider; // Inyectado desde ApplicationConfig
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,29 +32,25 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                // ZONA PÚBLICA
+                // 1. SWAGGER Y DOCS (Añadido /doc/** para corregir tu error 403)
                 .requestMatchers(
+                    "/doc/**", 
                     "/v3/api-docs/**", 
                     "/swagger-ui/**", 
                     "/swagger-ui.html",
                     "/swagger-resources/**", 
-                    "/webjars/**",
-                    "/configuration/ui", 
-                    "/configuration/security"
+                    "/webjars/**"
                 ).permitAll()
                 
-                // Auth pública
+                // 2. AUTH PÚBLICA
                 .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/login").permitAll()
                 
-                // RUTAS POR ROL (Opcional, según lo que hablamos antes)
-                // .requestMatchers(HttpMethod.DELETE, "/api/v1/usuarios/**").hasRole("ADMIN")
-
-                // TODO LO DEMÁS AUTENTICADO
+                // 3. TODO LO DEMÁS AUTENTICADO
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider) // Usamos el provider inyectado
+            .authenticationProvider(authenticationProvider) 
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -63,7 +59,8 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        // OJO: Si estás en Render, asegúrate de permitir tu dominio de Front, o "*" para pruebas
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://tu-frontend-en-render.com")); 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
