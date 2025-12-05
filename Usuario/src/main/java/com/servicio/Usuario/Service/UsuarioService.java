@@ -24,7 +24,7 @@ public class UsuarioService {
     }
 
     //Listar animal por id
-    public Usuario findById(long id){
+    public Usuario findById(Integer id){
         return usuarioRepository.findById(id).get();
     }
 
@@ -34,7 +34,7 @@ public class UsuarioService {
     }
 
     //Eliminar animal (por id)
-    public void delete(long id){
+    public void delete(Integer id){
         usuarioRepository.deleteById(id);
     }
 

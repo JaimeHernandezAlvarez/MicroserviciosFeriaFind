@@ -16,6 +16,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -47,6 +49,7 @@ public class Usuario implements UserDetails { // <--- 1. Implementamos la interf
     @Column(name = "HORARIO", length = 100)
     private String horario;
 
+    // En Usuario.java
     @Column(name = "CONTRASENA", nullable = false, length = 255)
     private String contrasena;
 
